@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Visualizador de Documentos - DocManage Pro</title>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        .page-shadow {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-[#111318] dark:text-white font-display overflow-hidden flex flex-col h-screen">
+<!-- Top Navigation -->
+<header class="flex-none bg-white dark:bg-[#1a202c] border-b border-[#f0f2f4] dark:border-[#2d3748] px-6 py-3 flex items-center justify-between z-20">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-[#111318] dark:text-white">
+<div class="size-8 text-primary">
+<span class="material-symbols-outlined text-3xl">description</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">DocManage Pro</h2>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-[#616f89] dark:text-gray-400 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="#">Dashboard</a>
+<a class="text-primary text-sm font-medium border-b-2 border-primary py-1" href="#">Meus Documentos</a>
+<a class="text-[#616f89] dark:text-gray-400 hover:text-primary dark:hover:text-primary text-sm font-medium transition-colors" href="#">Compartilhados</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<!-- Search -->
+<label class="hidden lg:flex relative items-center w-64 h-10">
+<div class="absolute left-3 text-[#616f89] dark:text-gray-500">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="w-full h-full bg-[#f0f2f4] dark:bg-[#2d3748] border-none rounded-lg pl-10 pr-4 text-sm focus:ring-2 focus:ring-primary dark:text-white placeholder-[#616f89]" placeholder="Pesquisar..."/>
+</label>
+<!-- Notifications -->
+<button class="relative p-2 text-[#616f89] dark:text-gray-400 hover:bg-[#f0f2f4] dark:hover:bg-[#2d3748] rounded-lg transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 size-2 bg-red-500 rounded-full border-2 border-white dark:border-[#1a202c]"></span>
+</button>
+<!-- User Profile -->
+<div class="size-9 rounded-full bg-cover bg-center border border-[#f0f2f4] dark:border-[#2d3748] cursor-pointer" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBDzlBmFcR4qsHLo8yJHOBWAm14fkUOCM8O888PM6Ux7xshmRLkYe4Ft86zxFUSuz3pE9Qzh3VBtSHjuodHG_-CUU1B6by2eFETl0HvkuHg8N_q5P4gyggOATk4v2NvnvnY0Cm3PizDzttqrDzSZ4pjCXsWkNpF7I0q--VgkAsaBBQEjDuuWuQFxds8kCkFC7eSa6OeT04S4MJuSw511rIKtm3Y1Crs4iVZycGkTmJy8uc6UfAKXEosZDrfYo0hHF-4LUpcOhYoJDTV");'></div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex flex-1 overflow-hidden">
+<!-- Left Sidebar (Navigation & Tools) -->
+<aside class="w-72 bg-white dark:bg-[#1a202c] border-r border-[#f0f2f4] dark:border-[#2d3748] flex flex-col z-10 hidden md:flex">
+<!-- Sidebar Header / Tabs -->
+<div class="flex border-b border-[#f0f2f4] dark:border-[#2d3748]">
+<button class="flex-1 py-3 text-sm font-medium text-primary border-b-2 border-primary bg-primary/5 dark:bg-primary/10">
+                    Anotações
+                </button>
+<button class="flex-1 py-3 text-sm font-medium text-[#616f89] dark:text-gray-400 hover:bg-[#f0f2f4] dark:hover:bg-[#2d3748] transition-colors">
+                    Miniaturas
+                </button>
+<button class="flex-1 py-3 text-sm font-medium text-[#616f89] dark:text-gray-400 hover:bg-[#f0f2f4] dark:hover:bg-[#2d3748] transition-colors">
+                    Info
+                </button>
+</div>
+<!-- Sidebar Content -->
+<div class="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
+<!-- Comment Card 1 -->
+<div class="flex flex-col gap-2 p-3 rounded-lg border border-[#f0f2f4] dark:border-[#2d3748] bg-white dark:bg-[#1a202c] hover:border-primary/30 transition-colors cursor-pointer group">
+<div class="flex justify-between items-start">
+<div class="flex gap-2 items-center">
+<div class="size-6 rounded-full bg-cover bg-center" data-alt="User avatar small" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBqwQEWxUP0QodmsImpeFR8Q6-oC5Us64c88xvtaLXEgO4iIB5hGfIuzy0CvQ4ghv6eFtDCulAcSemHCjcsTILT6peNaUbfn14QZvu366OfKC-S8K_FvbzTvXfC8vj5-8HxPkDsAWT3agIp3WrGzlcj14Me36Ga7O0UV436LPWNVz-Vg-l8ZdVGdxBEj860ZDJokUJj5g-L4LAaGDKWRXJLWhd_7zo_KNSWeNg6iHDo2WWztELtMxJmufHQLC8NQ35mztAVVtTR6mhK");'></div>
+<span class="text-xs font-bold text-[#111318] dark:text-white">Ana Silva</span>
+</div>
+<span class="text-[10px] text-[#616f89] dark:text-gray-500">10:23 AM</span>
+</div>
+<p class="text-sm text-[#4b5563] dark:text-gray-300 leading-relaxed">
+                        Por favor, revise a cláusula 4.2 referente ao prazo de entrega.
+                    </p>
+<div class="flex justify-between items-center mt-1">
+<div class="flex items-center gap-1">
+<span class="size-2 rounded-full bg-yellow-400"></span>
+<span class="text-xs text-[#616f89] dark:text-gray-500">Página 1</span>
+</div>
+<button class="opacity-0 group-hover:opacity-100 text-xs text-primary font-medium hover:underline">Responder</button>
+</div>
+</div>
+<!-- Comment Card 2 -->
+<div class="flex flex-col gap-2 p-3 rounded-lg border border-[#f0f2f4] dark:border-[#2d3748] bg-white dark:bg-[#1a202c] hover:border-primary/30 transition-colors cursor-pointer group">
+<div class="flex justify-between items-start">
+<div class="flex gap-2 items-center">
+<div class="size-6 rounded-full bg-cover bg-center" data-alt="User avatar small" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBqTVlSNnn6sFxhwfkgpNwRvtv11WAVQW8AUbHrAykND1LNuXAyMypZ2cGtBOBU3k71YSAXSlicdKWP92WET-GtML8t9cbjH1G1QgbQfWoQDeolvO0o7bbQ-6r73D52oDIvAbYcG87XntqK1DCA8bZJWFldl6vUrmU9Y6XWzbUM0dLYKqUGFHZGvTr5pTVhhOsZXpB2-iTvvCNYLj_NWKTORylynUaOiVHxVMeWFsTxBeYQMaF2ujhgbBF0KU8MbjxzEob4HUQIWPMp");'></div>
+<span class="text-xs font-bold text-[#111318] dark:text-white">Carlos Mendes</span>
+</div>
+<span class="text-[10px] text-[#616f89] dark:text-gray-500">Ontem</span>
+</div>
+<p class="text-sm text-[#4b5563] dark:text-gray-300 leading-relaxed">
+                        Este valor precisa ser atualizado conforme o novo orçamento.
+                    </p>
+<div class="flex justify-between items-center mt-1">
+<div class="flex items-center gap-1">
+<span class="size-2 rounded-full bg-red-400"></span>
+<span class="text-xs text-[#616f89] dark:text-gray-500">Página 3</span>
+</div>
+<button class="opacity-0 group-hover:opacity-100 text-xs text-primary font-medium hover:underline">Responder</button>
+</div>
+</div>
+</div>
+<!-- Sidebar Footer -->
+<div class="p-4 border-t border-[#f0f2f4] dark:border-[#2d3748]">
+<button class="flex w-full items-center justify-center gap-2 rounded-lg h-10 bg-primary/10 text-primary text-sm font-bold hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-[18px]">add_comment</span>
+                    Adicionar Nota
+                </button>
+</div>
+</aside>
+<!-- Center Workspace -->
+<div class="flex-1 flex flex-col bg-[#f3f4f6] dark:bg-[#0f1115] relative">
+<!-- Breadcrumbs & Status Header -->
+<div class="flex items-center justify-between px-6 py-3 bg-white dark:bg-[#1a202c] border-b border-[#f0f2f4] dark:border-[#2d3748]">
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-2 text-xs">
+<a class="text-[#616f89] hover:text-primary dark:text-gray-400 dark:hover:text-primary" href="#">Jurídico</a>
+<span class="text-[#cbd5e1] dark:text-gray-600">/</span>
+<a class="text-[#616f89] hover:text-primary dark:text-gray-400 dark:hover:text-primary" href="#">Contratos</a>
+<span class="text-[#cbd5e1] dark:text-gray-600">/</span>
+<span class="text-[#111318] dark:text-gray-200 font-medium truncate max-w-[200px] sm:max-w-md">Contrato_Prestacao_Servicos_v2.pdf</span>
+</div>
+<div class="flex items-center gap-2">
+<h1 class="text-base font-bold text-[#111318] dark:text-white">Contrato de Prestação de Serviços v2</h1>
+<span class="px-2 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-[10px] font-bold uppercase tracking-wide border border-green-200 dark:border-green-800">Aprovado</span>
+<span class="text-xs text-[#94a3b8] flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">cloud_done</span>
+                            Salvo
+                        </span>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<button class="hidden sm:flex items-center gap-2 px-3 h-9 rounded-lg border border-[#e2e8f0] dark:border-[#4a5568] text-[#111318] dark:text-gray-200 text-sm font-medium hover:bg-gray-50 dark:hover:bg-[#2d3748] transition-colors">
+<span class="material-symbols-outlined text-[18px]">share</span>
+                        Compartilhar
+                    </button>
+<button class="flex items-center gap-2 px-4 h-9 rounded-lg bg-primary text-white text-sm font-bold shadow-sm hover:bg-blue-700 transition-colors">
+<span class="material-symbols-outlined text-[18px]">save</span>
+<span class="hidden sm:inline">Salvar</span>
+</button>
+</div>
+</div>
+<!-- Floating Toolbar (Sticky) -->
+<div class="sticky top-0 z-10 flex justify-center py-4 pointer-events-none">
+<div class="pointer-events-auto flex items-center gap-1 bg-white dark:bg-[#2d3748] rounded-lg shadow-lg border border-[#e2e8f0] dark:border-[#4a5568] p-1.5">
+<!-- Zoom Controls -->
+<div class="flex items-center gap-1 pr-2 border-r border-[#e2e8f0] dark:border-[#4a5568]">
+<button class="p-2 text-[#4b5563] dark:text-gray-300 hover:bg-[#f3f4f6] dark:hover:bg-[#4a5568] rounded hover:text-primary transition-colors tooltip" title="Zoom Out">
+<span class="material-symbols-outlined text-[20px]">remove_circle</span>
+</button>
+<span class="text-xs font-medium w-12 text-center text-[#111318] dark:text-white">100%</span>
+<button class="p-2 text-[#4b5563] dark:text-gray-300 hover:bg-[#f3f4f6] dark:hover:bg-[#4a5568] rounded hover:text-primary transition-colors" title="Zoom In">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+</button>
+</div>
+<!-- Navigation -->
+<div class="flex items-center gap-1 px-2 border-r border-[#e2e8f0] dark:border-[#4a5568]">
+<button class="p-2 text-[#4b5563] dark:text-gray-300 hover:bg-[#f3f4f6] dark:hover:bg-[#4a5568] rounded hover:text-primary transition-colors" title="Previous Page">
+<span class="material-symbols-outlined text-[20px]">keyboard_arrow_up</span>
+</button>
+<div class="flex items-center gap-1 text-xs">
+<input class="w-8 h-7 text-center rounded border border-[#e2e8f0] dark:border-[#4a5568] bg-transparent text-[#111318] dark:text-white focus:ring-1 focus:ring-primary focus:border-primary" type="text" value="1"/>
+<span class="text-[#94a3b8]">/ 12</span>
+</div>
+<button class="p-2 text-[#4b5563] dark:text-gray-300 hover:bg-[#f3f4f6] dark:hover:bg-[#4a5568] rounded hover:text-primary transition-colors" title="Next Page">
+<span class="material-symbols-outlined text-[20px]">keyboard_arrow_down</span>
+</button>
+</div>
+<!-- Tools -->
+<div class="flex items-center gap-1 px-2 border-r border-[#e2e8f0] dark:border-[#4a5568]">
+<button class="p-2 text-[#4b5563] dark:text-gray-300 hover:bg-[#f3f4f6] dark:hover:bg-[#4a5568] rounded hover:text-primary transition-colors" title="Select Tool">
+<span class="material-symbols-outlined text-[20px]">arrow_selector_tool</span>
+</button>
+<button class="p-2 text-[#4b5563] dark:text-gray-300 hover:bg-[#f3f4f6] dark:hover:bg-[#4a5568] rounded hover:text-primary transition-colors" title="Hand Tool">
+<span class="material-symbols-outlined text-[20px]">pan_tool</span>
+</button>
+</div>
+<!-- Annotations -->
+<div class="flex items-center gap-1 px-2 border-r border-[#e2e8f0] dark:border-[#4a5568]">
+<button class="p-2 bg-primary/10 text-primary rounded hover:bg-primary/20 transition-colors" title="Highlight">
+<span class="material-symbols-outlined text-[20px] fill-current">ink_highlighter</span>
+</button>
+<button class="p-2 text-[#4b5563] dark:text-gray-300 hover:bg-[#f3f4f6] dark:hover:bg-[#4a5568] rounded hover:text-primary transition-colors" title="Add Comment">
+<span class="material-symbols-outlined text-[20px]">chat_bubble_outline</span>
+</button>
+<button class="p-2 text-[#4b5563] dark:text-gray-300 hover:bg-[#f3f4f6] dark:hover:bg-[#4a5568] rounded hover:text-primary transition-colors" title="Pen Tool">
+<span class="material-symbols-outlined text-[20px]">draw</span>
+</button>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-1 pl-2">
+<button class="p-2 text-[#4b5563] dark:text-gray-300 hover:bg-[#f3f4f6] dark:hover:bg-[#4a5568] rounded hover:text-primary transition-colors" title="Download">
+<span class="material-symbols-outlined text-[20px]">download</span>
+</button>
+<button class="p-2 text-[#4b5563] dark:text-gray-300 hover:bg-[#f3f4f6] dark:hover:bg-[#4a5568] rounded hover:text-primary transition-colors" title="Print">
+<span class="material-symbols-outlined text-[20px]">print</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Document Canvas -->
+<div class="flex-1 overflow-y-auto px-4 pb-20 flex justify-center w-full" id="document-container">
+<div class="flex flex-col gap-6 w-full max-w-[800px] items-center pt-2">
+<!-- Page 1 -->
+<div class="relative w-full bg-white dark:bg-white aspect-[1/1.414] page-shadow rounded-sm overflow-hidden group">
+<!-- Mock PDF Content as Image -->
+<div class="w-full h-full bg-contain bg-top bg-no-repeat" data-alt="Contract document page 1 showing header and text paragraphs" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDpyokGLpdiHucIAcXbVQQq5TPM6HoDbv_Z4rw1nAdH-lSlGA5e0XNWqAd0aIttrLsTBMMgRts1XOvz7GIZwGh5vloA5eHWk5Vw73fT14BFoO_At9-hWHPgudAsFRgXqZ6n6JNKAgY7Xsr1YnJtRn7kbKbIVG-524lKcfSSEgtm4ttQL4afoXgoHTUNQCMF7KTl6IuximULU1St3xMEYyFERSzxsmw6e8cfScOf_DlOT74G2HPfJ73h24YAM_y9n-RFAgryASYWOXfm"); opacity: 0.9;'>
+<!-- Overlay for text simulation (abstract) -->
+<div class="absolute inset-0 bg-white/10 dark:bg-transparent"></div>
+<!-- Highlights Layer -->
+<div class="absolute top-[28%] left-[10%] w-[60%] h-[1.5%] bg-yellow-300/40 mix-blend-multiply cursor-pointer hover:bg-yellow-300/60 transition-colors"></div>
+<!-- Comment Indicator -->
+<div class="absolute top-[27%] right-[25%] transform translate-x-1/2 -translate-y-1/2">
+<div class="size-6 bg-yellow-400 rounded-full flex items-center justify-center shadow-md cursor-pointer hover:scale-110 transition-transform ring-2 ring-white">
+<div class="size-6 rounded-full bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCHKxVO8bw9QmqIfJTiXTtr9ZM07Hy0ctN8x5mXK7166dpNMY4NikN9ova5n0YXdjK87oHHFjjk4b-hQPOHMBxrgHdSC9X7h_J-F4xstx3xbPbIhpA2I-EnpwFOoVAQM_KtlBEQ4G6w6rhCkh6YlHDuWR-JgbfVJ77lwr6FkQI2YDJWXT5gk7aLOMu7LPsigBCW0MD7snFtvD_h9HkoGYkr0LYTJQptGJBzluv3pqOUAeKTOh0wSdIwc14gO_w524adegLKGxmKrOKH");'></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Page 2 -->
+<div class="relative w-full bg-white dark:bg-white aspect-[1/1.414] page-shadow rounded-sm overflow-hidden">
+<div class="w-full h-full bg-contain bg-top bg-no-repeat" data-alt="Contract document page 2 showing signature lines and details" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDseumSffYJNWDGeWPjgbc3rRIu5YyzgUQRxm6af09IklrwsqPFaWEi65FigFv_i1CAsHU0s1cRqS0Hdh-OvCZYmq83fTBeL5KNCF09qoJnlK8-01PwtclJJNfUbDWAXb5Lw0Lc2c9vQerDudLsjy93_Ukgp8quKV0kiFC7d_-UhoHy-SekWMCO7oy4gje90-_V5jShWkSWvFevx5fPkplUMEZP-T9Rjb4nJhc0C3e4ACYKKZhK-0tBO8DRDNgZ3J_OsSUbyVLcETmz"); opacity: 0.9;'>
+<!-- Highlights Layer -->
+<div class="absolute top-[45%] left-[10%] w-[35%] h-[1.5%] bg-red-300/40 mix-blend-multiply cursor-pointer hover:bg-red-300/60 transition-colors"></div>
+<!-- Comment Indicator -->
+<div class="absolute top-[44%] right-[50%] transform translate-x-1/2 -translate-y-1/2">
+<div class="size-6 bg-red-400 rounded-full flex items-center justify-center shadow-md cursor-pointer hover:scale-110 transition-transform ring-2 ring-white">
+<div class="size-6 rounded-full bg-cover bg-center" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCY6S8gcLVKgaIa5X72ZRoPHs04ynteKDOIo5HLrjrT1NY_f__Pi4n-g-CJHYqn5Wi168wTbqRT0MaBrt8-EyLvwx605OoWRm9kFUR4msfqwLejguiY8KaMhXtBEKYUpeZ6CON0muwTjnDU1KizH83wLK8Ld-CpMEyQqsq3y-8GVvatp7mJOXjN5_yMkpjNVdKLDLkO0uMCDllRisKFXksv5DibCBQBufiMWiorxj4x86LC2hj1baXdKfml8Vbai1q7rZe2wx6ZIlki");'></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

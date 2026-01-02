@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DocuManager - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "primary-hover": "#104bc2",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111318] dark:text-white min-h-screen flex flex-col">
+<!-- Header -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-b-[#e5e7eb] dark:border-b-gray-800 bg-white dark:bg-[#1a202c] px-10 py-4 shadow-sm z-10">
+<div class="flex items-center gap-4">
+<div class="text-primary size-8">
+<svg fill="none" viewbox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M39.5563 34.1455V13.8546C39.5563 15.708 36.8773 17.3437 32.7927 18.3189C30.2914 18.916 27.263 19.2655 24 19.2655C20.737 19.2655 17.7086 18.916 15.2073 18.3189C11.1227 17.3437 8.44365 15.708 8.44365 13.8546V34.1455C8.44365 35.9988 11.1227 37.6346 15.2073 38.6098C17.7086 39.2069 20.737 39.5564 24 39.5564C27.263 39.5564 30.2914 39.2069 32.7927 38.6098C36.8773 37.6346 39.5563 35.9988 39.5563 34.1455Z" fill="currentColor"></path>
+<path clip-rule="evenodd" d="M10.4485 13.8519C10.4749 13.9271 10.6203 14.246 11.379 14.7361C12.298 15.3298 13.7492 15.9145 15.6717 16.3735C18.0007 16.9296 20.8712 17.2655 24 17.2655C27.1288 17.2655 29.9993 16.9296 32.3283 16.3735C34.2508 15.9145 35.702 15.3298 36.621 14.7361C37.3796 14.246 37.5251 13.9271 37.5515 13.8519C37.5287 13.7876 37.4333 13.5973 37.0635 13.2931C36.5266 12.8516 35.6288 12.3647 34.343 11.9175C31.79 11.0295 28.1333 10.4437 24 10.4437C19.8667 10.4437 16.2099 11.0295 13.657 11.9175C12.3712 12.3647 11.4734 12.8516 10.9365 13.2931C10.5667 13.5973 10.4713 13.7876 10.4485 13.8519ZM37.5563 18.7877C36.3176 19.3925 34.8502 19.8839 33.2571 20.2642C30.5836 20.9025 27.3973 21.2655 24 21.2655C20.6027 21.2655 17.4164 20.9025 14.7429 20.2642C13.1498 19.8839 11.6824 19.3925 10.4436 18.7877V34.1275C10.4515 34.1545 10.5427 34.4867 11.379 35.027C12.298 35.6207 13.7492 36.2054 15.6717 36.6644C18.0007 37.2205 20.8712 37.5564 24 37.5564C27.1288 37.5564 29.9993 37.2205 32.3283 36.6644C34.2508 36.2054 35.702 35.6207 36.621 35.027C37.4573 34.4867 37.5485 34.1546 37.5563 34.1275V18.7877ZM41.5563 13.8546V34.1455C41.5563 36.1078 40.158 37.5042 38.7915 38.3869C37.3498 39.3182 35.4192 40.0389 33.2571 40.5551C30.5836 41.1934 27.3973 41.5564 24 41.5564C20.6027 41.5564 17.4164 41.1934 14.7429 40.5551C12.5808 40.0389 10.6502 39.3182 9.20848 38.3869C7.84205 37.5042 6.44365 36.1078 6.44365 34.1455L6.44365 13.8546C6.44365 12.2684 7.37223 11.0454 8.39581 10.2036C9.43325 9.3505 10.8137 8.67141 12.343 8.13948C15.4203 7.06909 19.5418 6.44366 24 6.44366C28.4582 6.44366 32.5797 7.06909 35.657 8.13948C37.1863 8.67141 38.5667 9.3505 39.6042 10.2036C40.6278 11.0454 41.5563 12.2684 41.5563 13.8546Z" fill="currentColor" fill-rule="evenodd"></path>
+</svg>
+</div>
+<h2 class="text-[#111318] dark:text-white text-lg font-bold leading-tight tracking-[-0.015em]">DocuManager</h2>
+</div>
+<button class="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium text-[#616f89] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="hidden sm:inline">Precisa de Ajuda?</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col items-center justify-center p-4 sm:p-8 relative overflow-hidden">
+<!-- Abstract Background Decoration -->
+<div class="absolute inset-0 z-0 pointer-events-none opacity-30">
+<div class="absolute -top-20 -left-20 w-[600px] h-[600px] bg-blue-100 dark:bg-blue-900/20 rounded-full blur-[100px]"></div>
+<div class="absolute top-1/2 right-0 w-[400px] h-[400px] bg-purple-100 dark:bg-purple-900/20 rounded-full blur-[80px]"></div>
+</div>
+<div class="w-full max-w-[480px] bg-white dark:bg-[#1a202c] rounded-2xl shadow-xl border border-[#e5e7eb] dark:border-gray-800 relative z-10 overflow-hidden">
+<!-- Tabs -->
+<div class="flex border-b border-[#e5e7eb] dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
+<button class="flex-1 py-4 text-center relative group">
+<span class="text-primary font-bold text-sm tracking-wide">LOGIN</span>
+<div class="absolute bottom-0 left-0 w-full h-[3px] bg-primary rounded-t-sm"></div>
+</button>
+<button class="flex-1 py-4 text-center relative group text-[#616f89] dark:text-gray-400 hover:text-[#111318] dark:hover:text-white transition-colors">
+<span class="font-bold text-sm tracking-wide">CRIAR CONTA</span>
+<div class="absolute bottom-0 left-0 w-full h-[3px] bg-transparent group-hover:bg-gray-200 dark:group-hover:bg-gray-600 rounded-t-sm transition-colors"></div>
+</button>
+</div>
+<div class="p-8 sm:p-10">
+<!-- Heading -->
+<div class="mb-8 text-center">
+<div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-4">
+<span class="material-symbols-outlined text-[28px]">lock</span>
+</div>
+<h1 class="text-[#111318] dark:text-white text-2xl font-black leading-tight tracking-tight mb-2">Bem-vindo de volta</h1>
+<p class="text-[#616f89] dark:text-gray-400 text-sm font-normal leading-relaxed">Gerencie seus documentos com a máxima segurança e eficiência.</p>
+</div>
+<!-- Form -->
+<form class="flex flex-col gap-5">
+<!-- Email Field -->
+<label class="flex flex-col gap-1.5">
+<span class="text-[#111318] dark:text-gray-200 text-sm font-semibold">E-mail corporativo</span>
+<div class="relative">
+<input class="form-input w-full rounded-lg border border-[#dbdfe6] dark:border-gray-600 bg-white dark:bg-gray-900 text-[#111318] dark:text-white h-12 px-4 py-3 text-base focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-[#9ca3af]" placeholder="nome@empresa.com.br" type="email"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 text-[20px] pointer-events-none">mail</span>
+</div>
+</label>
+<!-- Password Field -->
+<label class="flex flex-col gap-1.5">
+<div class="flex justify-between items-center">
+<span class="text-[#111318] dark:text-gray-200 text-sm font-semibold">Senha</span>
+<a class="text-primary hover:text-primary-hover text-xs font-semibold" href="#">Esqueceu a senha?</a>
+</div>
+<div class="relative">
+<input class="form-input w-full rounded-lg border border-[#dbdfe6] dark:border-gray-600 bg-white dark:bg-gray-900 text-[#111318] dark:text-white h-12 pl-4 pr-12 py-3 text-base focus:border-primary focus:ring-1 focus:ring-primary placeholder:text-[#9ca3af]" placeholder="••••••••" type="password"/>
+<button class="absolute right-0 top-0 h-full px-3 flex items-center justify-center text-[#616f89] hover:text-[#111318] dark:text-gray-400 dark:hover:text-white transition-colors" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</label>
+<!-- Action Button -->
+<button class="mt-2 flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary hover:bg-primary-hover text-white text-base font-bold transition-all shadow-md hover:shadow-lg focus:ring-2 focus:ring-offset-2 focus:ring-primary dark:focus:ring-offset-gray-900" type="button">
+<span class="mr-2">Acessar Painel</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<!-- Divider -->
+<div class="relative flex py-2 items-center">
+<div class="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
+<span class="flex-shrink-0 mx-4 text-gray-400 dark:text-gray-500 text-xs font-medium uppercase tracking-wider">Ou continue com</span>
+<div class="flex-grow border-t border-gray-200 dark:border-gray-700"></div>
+</div>
+<!-- SSO Options -->
+<div class="grid grid-cols-2 gap-3">
+<button class="flex items-center justify-center gap-2 rounded-lg border border-[#dbdfe6] dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 h-11 text-sm font-medium text-[#111318] dark:text-white transition-colors" type="button">
+<img alt="Google Logo" class="w-5 h-5" data-alt="Google G logo in colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDA8xIxAtK2bWvtGwFZJmPa4jJBRWoA-7lb4_AOG8rZWOXKjT4Wnk5gKcdf_y5aDB2znoeHB_C1nDB43zILklZMhHAIjDgEjxMxQkAzbMTP_HmhU6-LggNIyfcQ_KM6_LHrB89TzkfCapGi-uhYyDKAlbtNIXHqx8ndYABhPH8_1GP328ooPkrVRj0aKr8sLkGUI5Ts57BLXXNyK9bxv-rcKToDzvjwW_iPs9JemdTobevoYM3vdCiNr7KUjAibLPYBNj2HgsXBcXkw"/>
+<span>Google</span>
+</button>
+<button class="flex items-center justify-center gap-2 rounded-lg border border-[#dbdfe6] dark:border-gray-600 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 h-11 text-sm font-medium text-[#111318] dark:text-white transition-colors" type="button">
+<img alt="Microsoft Logo" class="w-5 h-5" data-alt="Microsoft square logo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-ISyF4zJNmsagBQ7zp53bJ7mvcApIQlalPVdN7capFgiFTuLO1_9lsEfB5oe4TlIsJ1YYPR_t0xQDY9SpHBd-5jb6Urq_uVZYWJuHIkOzfRxNTBSQTaM52y93Mtdao-SBLqwMubRkmr-sRPR1yudLv5XvGQqGGxAXEByQOvOMAmNW3-hikINRWmiAx7UbT2kuy9A7HnXqyIf_tx2nrma3QTb02HuYYvIcDB4Izh84R39TO28eGusd_8zr6_k0GkQ-rpLl1r4jK-I7"/>
+<span>Microsoft</span>
+</button>
+</div>
+</form>
+</div>
+<!-- Footer of Card -->
+<div class="bg-gray-50 dark:bg-gray-800/50 p-4 border-t border-[#e5e7eb] dark:border-gray-700 text-center">
+<p class="text-xs text-[#616f89] dark:text-gray-400">
+                    Protegido por reCAPTCHA e sujeito à <a class="text-primary hover:underline" href="#">Política de Privacidade</a> e <a class="text-primary hover:underline" href="#">Termos de Serviço</a>.
+                </p>
+</div>
+</div>
+<!-- Trust Badges -->
+<div class="mt-8 flex gap-6 opacity-60 grayscale transition-all hover:grayscale-0 hover:opacity-100">
+<div class="flex items-center gap-2 text-xs font-semibold text-[#616f89] dark:text-gray-400">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+<span>Dados Criptografados</span>
+</div>
+<div class="flex items-center gap-2 text-xs font-semibold text-[#616f89] dark:text-gray-400">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+<span>ISO 27001</span>
+</div>
+</div>
+</main>
+</body></html>

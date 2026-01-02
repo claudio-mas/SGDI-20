@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lixeira de Documentos - DocManager</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "primary-dark": "#0e45b5",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1a212e",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        /* Custom scrollbar for webkit browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111318] dark:text-gray-100 overflow-hidden">
+<div class="flex h-screen w-full">
+<!-- Sidebar -->
+<aside class="flex w-64 flex-col border-r border-[#dbdfe6] dark:border-gray-700 bg-surface-light dark:bg-surface-dark transition-colors duration-200">
+<div class="flex h-16 items-center gap-3 px-6 border-b border-[#f0f2f4] dark:border-gray-800">
+<div class="bg-primary aspect-square rounded-lg size-8 flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-xl">description</span>
+</div>
+<h1 class="text-[#111318] dark:text-white text-lg font-bold tracking-tight">DocManager</h1>
+</div>
+<nav class="flex-1 overflow-y-auto px-3 py-4">
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] dark:text-gray-400 hover:bg-[#f0f2f4] dark:hover:bg-gray-800 hover:text-[#111318] dark:hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] dark:text-gray-400 hover:bg-[#f0f2f4] dark:hover:bg-gray-800 hover:text-[#111318] dark:hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">folder</span>
+<p class="text-sm font-medium leading-normal">Meus Arquivos</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] dark:text-gray-400 hover:bg-[#f0f2f4] dark:hover:bg-gray-800 hover:text-[#111318] dark:hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">group</span>
+<p class="text-sm font-medium leading-normal">Compartilhados</p>
+</a>
+<div class="my-2 h-px bg-[#dbdfe6] dark:bg-gray-700 mx-3"></div>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 text-primary dark:text-primary font-semibold" href="#">
+<span class="material-symbols-outlined filled">delete</span>
+<p class="text-sm leading-normal">Lixeira</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-[#616f89] dark:text-gray-400 hover:bg-[#f0f2f4] dark:hover:bg-gray-800 hover:text-[#111318] dark:hover:text-white transition-colors group" href="#">
+<span class="material-symbols-outlined group-hover:text-primary transition-colors">settings</span>
+<p class="text-sm font-medium leading-normal">Configurações</p>
+</a>
+</div>
+</nav>
+<div class="p-4 border-t border-[#f0f2f4] dark:border-gray-800">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="size-10 rounded-full bg-cover bg-center border-2 border-white dark:border-gray-600 shadow-sm" data-alt="User avatar placeholder showing a smiling person" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCHF4yl9i-CedOkF2svL0O7Vb1cojemD3lDlnBT_XxvCZxoeembmPYlA9R0w4OafGa_Vh_8DCTxDvm2ldlobo15I88sqM5shJd6oZd_StAb4uZfJz_N_izJh-Yr4zFIyuvrjaaDb8tMBo7be9LPGb5algCvm1wcy8rI4A3jAOMqUh2ZRgfUxtWiTP-foMxDSSvAeTbG28O0UOEZjqY4jP4GLOajNYpRErWwI_lPuNNlk5ZbvyTbVZae8Trq8Hcy3QrTQ5w4bkq55etQ");'></div>
+<div class="absolute bottom-0 right-0 size-3 bg-green-500 border-2 border-white dark:border-gray-800 rounded-full"></div>
+</div>
+<div class="flex flex-col">
+<p class="text-sm font-semibold text-[#111318] dark:text-white">Carlos Mendes</p>
+<p class="text-xs text-[#616f89] dark:text-gray-400">Admin</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 flex flex-col h-full overflow-hidden relative">
+<!-- Top Header Area -->
+<header class="bg-surface-light dark:bg-surface-dark border-b border-[#dbdfe6] dark:border-gray-700 px-8 py-6 flex flex-col gap-6 shrink-0 z-10">
+<!-- Title & Actions -->
+<div class="flex flex-wrap justify-between items-start gap-4">
+<div class="flex flex-col gap-1">
+<h2 class="text-[#111318] dark:text-white text-3xl font-black tracking-tight">Lixeira</h2>
+<p class="text-[#616f89] dark:text-gray-400 text-sm font-medium flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">info</span>
+                            Arquivos excluídos são removidos permanentemente após 30 dias.
+                        </p>
+</div>
+<button class="flex items-center gap-2 px-4 py-2.5 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 text-sm font-bold rounded-lg transition-colors border border-transparent hover:border-red-200 dark:hover:border-red-800">
+<span class="material-symbols-outlined text-lg">delete_forever</span>
+<span>Esvaziar Lixeira</span>
+</button>
+</div>
+<!-- Search & Filters -->
+<div class="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between">
+<div class="relative w-full max-w-md">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[#616f89] dark:text-gray-500">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-2.5 border-none rounded-lg leading-5 bg-[#f0f2f4] dark:bg-gray-800 text-[#111318] dark:text-white placeholder-[#616f89] dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary/50 sm:text-sm transition-shadow" placeholder="Buscar documentos excluídos..." type="text"/>
+</div>
+<div class="flex gap-2 overflow-x-auto pb-1 lg:pb-0 scrollbar-hide">
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#dbdfe6] dark:border-gray-700 hover:bg-[#f0f2f4] dark:hover:bg-gray-800 bg-surface-light dark:bg-surface-dark text-[#111318] dark:text-gray-200 text-sm font-medium whitespace-nowrap transition-colors">
+                            Data de Exclusão
+                            <span class="material-symbols-outlined text-base">expand_more</span>
+</button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#dbdfe6] dark:border-gray-700 hover:bg-[#f0f2f4] dark:hover:bg-gray-800 bg-surface-light dark:bg-surface-dark text-[#111318] dark:text-gray-200 text-sm font-medium whitespace-nowrap transition-colors">
+                            Tipo de Arquivo
+                            <span class="material-symbols-outlined text-base">expand_more</span>
+</button>
+<button class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-[#dbdfe6] dark:border-gray-700 hover:bg-[#f0f2f4] dark:hover:bg-gray-800 bg-surface-light dark:bg-surface-dark text-[#111318] dark:text-gray-200 text-sm font-medium whitespace-nowrap transition-colors">
+                            Excluído Por
+                            <span class="material-symbols-outlined text-base">expand_more</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Content Scroll Area -->
+<div class="flex-1 overflow-y-auto p-4 lg:p-8 bg-background-light dark:bg-background-dark">
+<!-- Table Container -->
+<div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-sm border border-[#dbdfe6] dark:border-gray-700 overflow-hidden flex flex-col h-full max-h-[calc(100vh-280px)]">
+<div class="overflow-x-auto flex-1">
+<table class="w-full text-left border-collapse">
+<thead class="bg-gray-50 dark:bg-gray-800/50 sticky top-0 z-10 backdrop-blur-sm">
+<tr>
+<th class="px-6 py-4 w-12 border-b border-[#dbdfe6] dark:border-gray-700">
+<input class="rounded border-gray-300 text-primary focus:ring-primary/25 size-4" type="checkbox"/>
+</th>
+<th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-[#616f89] dark:text-gray-400 border-b border-[#dbdfe6] dark:border-gray-700">
+                                        Nome do Documento
+                                    </th>
+<th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-[#616f89] dark:text-gray-400 border-b border-[#dbdfe6] dark:border-gray-700">
+                                        Data de Exclusão
+                                    </th>
+<th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-[#616f89] dark:text-gray-400 border-b border-[#dbdfe6] dark:border-gray-700">
+                                        Excluído Por
+                                    </th>
+<th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-[#616f89] dark:text-gray-400 border-b border-[#dbdfe6] dark:border-gray-700">
+                                        Tamanho
+                                    </th>
+<th class="px-6 py-4 text-xs font-semibold uppercase tracking-wider text-[#616f89] dark:text-gray-400 text-right border-b border-[#dbdfe6] dark:border-gray-700">
+                                        Ações
+                                    </th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#dbdfe6] dark:divide-gray-700 bg-surface-light dark:bg-surface-dark">
+<!-- Item 1 -->
+<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 group transition-colors">
+<td class="px-6 py-4">
+<input class="rounded border-gray-300 text-primary focus:ring-primary/25 size-4" type="checkbox"/>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="flex-shrink-0 size-10 rounded-lg bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 flex items-center justify-center">
+<span class="material-symbols-outlined">picture_as_pdf</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-[#111318] dark:text-gray-100">Relatório_Financeiro_2023.pdf</p>
+<p class="text-xs text-[#616f89] dark:text-gray-500">/Finanças/Anuais</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-[#616f89] dark:text-gray-400 tabular-nums">
+                                        22 Out 2023
+                                    </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-6 rounded-full bg-cover bg-center" data-alt="Portrait of Ana Silva" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCnk08tYhxm9VjMOsAnDI8VydohKPYmGyqNaRZgzGC0js3KvQMBdBGl1pmo9tHoIKsVHJw-h9eewXu9yIOgGzvK2cjmqMg44MeWLvvL67HeMvU4GoyPHIaF8gBzDdU_cghjvBa4vGK_E8sTP1L4ZWjvO52RjIeTNkLg1-8l9f3FWCRSVgXF6qooy4p63AOZE4sULQilwDD63S4yG4z2yiNJtKoKqF513boEeEyc4fWsp23gEQq8YBd7-eCzRdYsRLj_TCntx2q5WSMX");'></div>
+<span class="text-sm font-medium text-[#111318] dark:text-gray-300">Ana Silva</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-[#616f89] dark:text-gray-400 tabular-nums">
+                                        2.4 MB
+                                    </td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 rounded-md hover:bg-primary/10 text-primary transition-colors" title="Restaurar">
+<span class="material-symbols-outlined text-xl">restore_from_trash</span>
+</button>
+<button class="p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 text-[#616f89] hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors" title="Excluir Permanentemente">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Item 2 -->
+<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 group transition-colors">
+<td class="px-6 py-4">
+<input class="rounded border-gray-300 text-primary focus:ring-primary/25 size-4" type="checkbox"/>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="flex-shrink-0 size-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+<span class="material-symbols-outlined">description</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-[#111318] dark:text-gray-100">Contrato_Prestação_Serviços.docx</p>
+<p class="text-xs text-[#616f89] dark:text-gray-500">/Jurídico/Contratos</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-[#616f89] dark:text-gray-400 tabular-nums">
+                                        21 Out 2023
+                                    </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-6 rounded-full bg-cover bg-center" data-alt="Portrait of Roberto Dias" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCg_7xL_wXwYWlnFht3fTspv9l69lWVt_zhMb_uSHGUyYDgMgrQQkYP_lpyJRCY-dFmxOKrygEp2UQ2DdG1sY-cjrOnk7h-vydBwEJz75_li2I8-lcC4SiEpSYeArUBf7x1i30zjJC_H0ugMjsCm2ZuN0ZI-5wgLlueQTerm0zjQweMQIqj2vQndt5488ZV1xhtBTWZkZ8nzsZ6ebySU6UOLxzFYMF11dUmrNLZkEAqLpUsBo3C1i8-kQ9Iz9eljCujWQIciVXn_xWn");'></div>
+<span class="text-sm font-medium text-[#111318] dark:text-gray-300">Roberto Dias</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-[#616f89] dark:text-gray-400 tabular-nums">
+                                        1.1 MB
+                                    </td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 rounded-md hover:bg-primary/10 text-primary transition-colors" title="Restaurar">
+<span class="material-symbols-outlined text-xl">restore_from_trash</span>
+</button>
+<button class="p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 text-[#616f89] hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors" title="Excluir Permanentemente">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Item 3 -->
+<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 group transition-colors">
+<td class="px-6 py-4">
+<input class="rounded border-gray-300 text-primary focus:ring-primary/25 size-4" type="checkbox"/>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="flex-shrink-0 size-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center">
+<span class="material-symbols-outlined">slideshow</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-[#111318] dark:text-gray-100">Apresentação_Q3.pptx</p>
+<p class="text-xs text-[#616f89] dark:text-gray-500">/Marketing/Apresentações</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-[#616f89] dark:text-gray-400 tabular-nums">
+                                        20 Out 2023
+                                    </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-6 rounded-full bg-cover bg-center" data-alt="Portrait of Ana Silva" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAjEZxqI5MGpM-P4MJ2Ukm9sDVuXzjnBZeSTtiTjMugwvCbEShDS6-rwOWot0uRUbKt1K-llExSf-oMxReB7n9xfNg70oURtl2Pxm7iS-4hUDGFl41ymUDKwI8DKMlvKGFAGqX91r6ZGcmS47S9tZUVRQ2y7iGujD75fg10xG7ATot55Q5Jpm3XkbbWaEkYRjpWwoN6ekxYzlunf4JWnCFpvcRQALxax7Lxkg5UlXqNDv0CqOcyWvq5BZDasCuzUqvFuyBr1KnPx6AB");'></div>
+<span class="text-sm font-medium text-[#111318] dark:text-gray-300">Ana Silva</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-[#616f89] dark:text-gray-400 tabular-nums">
+                                        5.8 MB
+                                    </td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 rounded-md hover:bg-primary/10 text-primary transition-colors" title="Restaurar">
+<span class="material-symbols-outlined text-xl">restore_from_trash</span>
+</button>
+<button class="p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 text-[#616f89] hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors" title="Excluir Permanentemente">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Item 4 -->
+<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 group transition-colors">
+<td class="px-6 py-4">
+<input class="rounded border-gray-300 text-primary focus:ring-primary/25 size-4" type="checkbox"/>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="flex-shrink-0 size-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex items-center justify-center">
+<span class="material-symbols-outlined">design_services</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-[#111318] dark:text-gray-100">Design_System_v2.fig</p>
+<p class="text-xs text-[#616f89] dark:text-gray-500">/Design/Ativos</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-[#616f89] dark:text-gray-400 tabular-nums">
+                                        19 Out 2023
+                                    </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-6 rounded-full bg-cover bg-center" data-alt="Portrait of Carla M." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCVc3GxxJQq55vrXRXVV53ckdJs3ZwjxwZdWxboGYfom7EbssHkuq334nXh1TeZZ9m5G-wsBk6PcvUDUU3Z7lYeidz92U2QxUaGsrf--2Q0mI1pTt-Wlt4jibQwlU0g4mzPurtElcY-EvERptaIjRJfOOzepHVv8P6gryyt32-lhk6hvYPMZzu2__5-pZWZlDguQuSPfQzGpFD_zlBAfUDOQxqk9QG_7ZnpbaO9jYc3tj4kDM7Bk-dxW2mu5BHKOsMRKTLgnDQk7OKW");'></div>
+<span class="text-sm font-medium text-[#111318] dark:text-gray-300">Carla M.</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-[#616f89] dark:text-gray-400 tabular-nums">
+                                        12 MB
+                                    </td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 rounded-md hover:bg-primary/10 text-primary transition-colors" title="Restaurar">
+<span class="material-symbols-outlined text-xl">restore_from_trash</span>
+</button>
+<button class="p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 text-[#616f89] hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors" title="Excluir Permanentemente">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Item 5 -->
+<tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 group transition-colors">
+<td class="px-6 py-4">
+<input class="rounded border-gray-300 text-primary focus:ring-primary/25 size-4" type="checkbox"/>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="flex-shrink-0 size-10 rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 flex items-center justify-center">
+<span class="material-symbols-outlined">table_view</span>
+</div>
+<div>
+<p class="text-sm font-semibold text-[#111318] dark:text-gray-100">Planilha_Custos.xlsx</p>
+<p class="text-xs text-[#616f89] dark:text-gray-500">/Finanças/Custos</p>
+</div>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-[#616f89] dark:text-gray-400 tabular-nums">
+                                        15 Out 2023
+                                    </td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="size-6 rounded-full bg-cover bg-center" data-alt="Portrait of Marcos J." style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBC9K1dc-2XgWX8ZZuQPiXksN2MUEDCWaULDkKlvxTE1WkB31rSyxjtDwJIlNoWK0i1lMinoKlOuI6DwFKVwxTnSr_zlcdE43Eimj_bcXbKSH20B_lWewTKM-YLKr700AJ68HX7IXCpUdbzx7G4IMfp0YaxBpld_rqlO7lPo23QIAqzJgXJ8PFbmgb0e_MpSC9MbYsgdzRk6tO8GrPQEOQ5bG6XL945glewjdftPpZl3IN6D1LW10mXOqB7y3j3Zcq_0QN24j31vpyZ");'></div>
+<span class="text-sm font-medium text-[#111318] dark:text-gray-300">Marcos J.</span>
+</div>
+</td>
+<td class="px-6 py-4 text-sm text-[#616f89] dark:text-gray-400 tabular-nums">
+                                        850 KB
+                                    </td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 rounded-md hover:bg-primary/10 text-primary transition-colors" title="Restaurar">
+<span class="material-symbols-outlined text-xl">restore_from_trash</span>
+</button>
+<button class="p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 text-[#616f89] hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 transition-colors" title="Excluir Permanentemente">
+<span class="material-symbols-outlined text-xl">delete</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="flex items-center justify-between px-6 py-4 border-t border-[#dbdfe6] dark:border-gray-700 bg-surface-light dark:bg-surface-dark">
+<p class="text-sm text-[#616f89] dark:text-gray-400">
+                            Exibindo <span class="font-medium text-[#111318] dark:text-white">1-5</span> de <span class="font-medium text-[#111318] dark:text-white">42</span> documentos excluídos
+                        </p>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-lg border border-[#dbdfe6] dark:border-gray-700 text-[#616f89] dark:text-gray-400 hover:bg-[#f0f2f4] dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+<span class="material-symbols-outlined text-lg">chevron_left</span>
+</button>
+<button class="p-2 rounded-lg border border-[#dbdfe6] dark:border-gray-700 text-[#616f89] dark:text-gray-400 hover:bg-[#f0f2f4] dark:hover:bg-gray-800">
+<span class="material-symbols-outlined text-lg">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Floating Bulk Actions (Ideally visible when items are selected, hidden by default but shown here for demo purposes as if items were selected) -->
+<!-- In a real app, this would be conditionally rendered or transitioned in -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#111318] dark:bg-white text-white dark:text-[#111318] px-6 py-3 rounded-full shadow-lg flex items-center gap-6 z-50 transform transition-transform translate-y-24">
+<!-- Note: Added translate-y-24 to hide it initially, remove class to show -->
+<div class="flex items-center gap-3 border-r border-gray-600 dark:border-gray-300 pr-6">
+<span class="bg-primary size-5 rounded-full flex items-center justify-center text-[10px] font-bold">2</span>
+<span class="text-sm font-medium">Items Selecionados</span>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-sm font-bold hover:text-primary transition-colors">Restaurar</button>
+<button class="text-sm font-bold text-red-400 dark:text-red-600 hover:text-red-300 dark:hover:text-red-700 transition-colors">Excluir para sempre</button>
+</div>
+<button class="ml-2 hover:bg-white/10 dark:hover:bg-black/10 rounded-full p-1">
+<span class="material-symbols-outlined text-lg">close</span>
+</button>
+</div>
+</body></html>

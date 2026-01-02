@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Explorador de Documentos</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#135bec",
+              "background-light": "#f6f6f8",
+              "background-dark": "#101622",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        /* Custom scrollbar for clean look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#111318] dark:text-white h-screen overflow-hidden flex flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-[#f0f2f4] dark:border-gray-800 bg-white dark:bg-[#111318] px-6 py-3 shrink-0 z-20">
+<div class="flex items-center gap-8">
+<div class="flex items-center gap-3 text-[#111318] dark:text-white">
+<div class="size-8 flex items-center justify-center bg-primary/10 rounded-lg text-primary">
+<span class="material-symbols-outlined">folder_open</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">DocExplorer</h2>
+</div>
+<!-- Search Bar -->
+<label class="hidden md:flex flex-col min-w-40 !h-10 w-[400px]">
+<div class="flex w-full flex-1 items-stretch rounded-lg h-full ring-1 ring-[#e5e7eb] dark:ring-gray-700 focus-within:ring-2 focus-within:ring-primary">
+<div class="text-[#616f89] dark:text-gray-400 flex border-none bg-[#f0f2f4] dark:bg-gray-800 items-center justify-center pl-4 rounded-l-lg border-r-0">
+<span class="material-symbols-outlined text-[20px]">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-[#111318] dark:text-white focus:outline-0 focus:ring-0 border-none bg-[#f0f2f4] dark:bg-gray-800 focus:border-none h-full placeholder:text-[#616f89] px-4 rounded-l-none border-l-0 pl-2 text-sm font-normal leading-normal" placeholder="Pesquisar arquivos, pastas..." value=""/>
+</div>
+</label>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden lg:flex items-center gap-6">
+<a class="text-[#616f89] dark:text-gray-400 hover:text-primary text-sm font-medium leading-normal flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[20px]">dashboard</span>
+                    Dashboard
+                </a>
+<a class="text-[#111318] dark:text-white font-semibold text-sm leading-normal flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[20px] text-primary">folder</span>
+                    Arquivos
+                </a>
+<a class="text-[#616f89] dark:text-gray-400 hover:text-primary text-sm font-medium leading-normal flex items-center gap-2" href="#">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+</a>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-9 ring-2 ring-white dark:ring-gray-800 shadow-sm cursor-pointer" data-alt="User profile picture showing a smiling professional" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBfknlMuNOCbcJyIuxlvwwgOLX1jQRrlRoRwB18FfokYCv3AJVU1RcmKTx-hb-OUVl6-HCq8TU9hNBKBDZQI74stpEcsgOHYYCfhFYyhxr8afIhX_vQwQYoOO3eCgNjY41cK8P7nhBY2cwmrdIonR9JcsDDRhtOca914NYHAHmCALeyJLtpyuX4o5xUj2jEzo2nyMNT9xA9wkVZ3VGMswSC3c9GvYNDELcWxtrwB8190VSyLb9B9dbMbuG-X1zQ1auHkpsZtf6fyzm8");'></div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden relative">
+<!-- Side Navigation Bar -->
+<aside class="w-64 bg-white dark:bg-[#111318] border-r border-[#f0f2f4] dark:border-gray-800 flex flex-col flex-shrink-0 hidden md:flex overflow-y-auto">
+<div class="p-4 flex flex-col gap-6">
+<!-- Navigation Group -->
+<div class="flex flex-col gap-2">
+<p class="text-[#616f89] dark:text-gray-500 text-xs font-bold uppercase tracking-wider px-3 mb-1">Navegação</p>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/10 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder</span>
+<p class="text-sm font-medium leading-normal">Meus Arquivos</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 text-[#616f89] dark:text-gray-400 hover:text-[#111318] dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">schedule</span>
+<p class="text-sm font-medium leading-normal">Recentes</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 text-[#616f89] dark:text-gray-400 hover:text-[#111318] dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">star</span>
+<p class="text-sm font-medium leading-normal">Favoritos</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 text-[#616f89] dark:text-gray-400 hover:text-[#111318] dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-sm font-medium leading-normal">Compartilhados</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/50 text-[#616f89] dark:text-gray-400 hover:text-[#111318] dark:hover:text-white transition-colors" href="#">
+<span class="material-symbols-outlined">delete</span>
+<p class="text-sm font-medium leading-normal">Lixeira</p>
+</a>
+</div>
+<div class="h-px bg-[#f0f2f4] dark:bg-gray-800 w-full"></div>
+<!-- Tree View Group -->
+<div class="flex flex-col gap-2">
+<p class="text-[#616f89] dark:text-gray-500 text-xs font-bold uppercase tracking-wider px-3 mb-1">Pastas</p>
+<details class="group" open="">
+<summary class="flex items-center gap-2 px-3 py-1.5 rounded-lg cursor-pointer text-[#111318] dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50 select-none">
+<span class="material-symbols-outlined text-gray-400 text-[20px] transition-transform group-open:rotate-90">arrow_right</span>
+<span class="material-symbols-outlined text-gray-500 text-[20px]" style="font-variation-settings: 'FILL' 1;">folder</span>
+<span class="text-sm font-medium truncate">Projetos 2024</span>
+</summary>
+<div class="pl-4 mt-1 flex flex-col gap-1 border-l border-gray-100 dark:border-gray-800 ml-5">
+<a class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[#616f89] dark:text-gray-400 hover:text-[#111318] dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50" href="#">
+<span class="material-symbols-outlined text-[18px]">folder</span>
+<span class="text-sm truncate">Marketing</span>
+</a>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-primary bg-primary/5 font-medium" href="#">
+<span class="material-symbols-outlined text-[18px] text-primary" style="font-variation-settings: 'FILL' 1;">folder</span>
+<span class="text-sm truncate">Financeiro</span>
+</a>
+<a class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[#616f89] dark:text-gray-400 hover:text-[#111318] dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50" href="#">
+<span class="material-symbols-outlined text-[18px]">folder</span>
+<span class="text-sm truncate">Jurídico</span>
+</a>
+</div>
+</details>
+<details class="group">
+<summary class="flex items-center gap-2 px-3 py-1.5 rounded-lg cursor-pointer text-[#616f89] dark:text-gray-400 hover:text-[#111318] dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50 select-none">
+<span class="material-symbols-outlined text-gray-400 text-[20px] transition-transform group-open:rotate-90">arrow_right</span>
+<span class="material-symbols-outlined text-gray-500 text-[20px]">folder</span>
+<span class="text-sm font-medium truncate">Recursos Humanos</span>
+</summary>
+</details>
+<details class="group">
+<summary class="flex items-center gap-2 px-3 py-1.5 rounded-lg cursor-pointer text-[#616f89] dark:text-gray-400 hover:text-[#111318] dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800/50 select-none">
+<span class="material-symbols-outlined text-gray-400 text-[20px] transition-transform group-open:rotate-90">arrow_right</span>
+<span class="material-symbols-outlined text-gray-500 text-[20px]">folder</span>
+<span class="text-sm font-medium truncate">Ativos de Marca</span>
+</summary>
+</details>
+</div>
+</div>
+<!-- Storage Usage Indicator -->
+<div class="mt-auto p-4 border-t border-[#f0f2f4] dark:border-gray-800">
+<div class="bg-background-light dark:bg-gray-800/50 rounded-xl p-3">
+<div class="flex items-center justify-between mb-2">
+<span class="text-xs font-semibold text-[#111318] dark:text-white">Armazenamento</span>
+<span class="text-xs text-[#616f89] dark:text-gray-400">75%</span>
+</div>
+<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+<div class="bg-primary h-1.5 rounded-full" style="width: 75%"></div>
+</div>
+<p class="text-[10px] text-[#616f89] dark:text-gray-500 mt-2">15GB de 20GB usados</p>
+</div>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col h-full overflow-hidden bg-white dark:bg-[#111318]">
+<!-- Breadcrumbs & Headline -->
+<div class="px-6 pt-6 pb-2">
+<nav class="flex text-sm text-[#616f89] dark:text-gray-400 mb-2">
+<a class="hover:text-primary transition-colors" href="#">Documentos</a>
+<span class="mx-2 text-gray-300">/</span>
+<a class="hover:text-primary transition-colors" href="#">Projetos 2024</a>
+<span class="mx-2 text-gray-300">/</span>
+<span class="text-[#111318] dark:text-white font-medium">Financeiro</span>
+</nav>
+<div class="flex items-center justify-between">
+<h3 class="text-[#111318] dark:text-white tracking-tight text-2xl font-bold leading-tight">Financeiro</h3>
+<div class="flex items-center gap-2 text-xs text-[#616f89] dark:text-gray-400">
+<span>12 pastas</span>
+<span class="size-1 bg-gray-300 rounded-full"></span>
+<span>48 arquivos</span>
+</div>
+</div>
+</div>
+<!-- Toolbar -->
+<div class="px-6 py-4 flex flex-col sm:flex-row justify-between gap-4 border-b border-[#f0f2f4] dark:border-gray-800">
+<div class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+<button class="flex items-center justify-center p-2 rounded-lg hover:bg-[#f0f2f4] dark:hover:bg-gray-800 text-[#616f89] dark:text-gray-400 transition-colors" title="Filter">
+<span class="material-symbols-outlined text-[24px]">filter_list</span>
+</button>
+<div class="h-6 w-px bg-gray-200 dark:bg-gray-700 mx-1"></div>
+<!-- Action Buttons (Disabled appearance by default or enabled for demo) -->
+<button class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[#f0f2f4] dark:hover:bg-gray-800 text-[#111318] dark:text-white text-sm font-medium transition-colors">
+<span class="material-symbols-outlined text-[20px]">drive_file_rename_outline</span>
+<span class="hidden sm:inline">Renomear</span>
+</button>
+<button class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-[#f0f2f4] dark:hover:bg-gray-800 text-[#111318] dark:text-white text-sm font-medium transition-colors">
+<span class="material-symbols-outlined text-[20px]">drive_file_move</span>
+<span class="hidden sm:inline">Mover</span>
+</button>
+<button class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 text-red-600 dark:text-red-400 text-sm font-medium transition-colors">
+<span class="material-symbols-outlined text-[20px]">delete</span>
+<span class="hidden sm:inline">Excluir</span>
+</button>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex bg-[#f0f2f4] dark:bg-gray-800 rounded-lg p-1">
+<button class="p-1.5 rounded bg-white dark:bg-gray-700 shadow-sm text-[#111318] dark:text-white">
+<span class="material-symbols-outlined text-[20px] block">grid_view</span>
+</button>
+<button class="p-1.5 rounded text-[#616f89] dark:text-gray-400 hover:text-[#111318] dark:hover:text-white">
+<span class="material-symbols-outlined text-[20px] block">view_list</span>
+</button>
+</div>
+<button class="flex cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 bg-primary hover:bg-blue-700 text-white gap-2 text-sm font-bold leading-normal tracking-[0.015em] min-w-0 px-5 shadow-lg shadow-blue-500/20 transition-all">
+<span class="material-symbols-outlined text-[20px]">add</span>
+<span class="truncate">Upload</span>
+</button>
+</div>
+</div>
+<!-- Content Grid -->
+<div class="flex-1 overflow-y-auto p-6 bg-background-light dark:bg-background-dark">
+<!-- Folders Section -->
+<div class="mb-8">
+<h4 class="text-sm font-semibold text-[#616f89] dark:text-gray-400 mb-4 uppercase tracking-wider">Pastas</h4>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+<!-- Folder Item -->
+<div class="group relative flex flex-col p-4 bg-white dark:bg-[#1e232e] border border-gray-100 dark:border-gray-800 rounded-xl hover:shadow-md hover:border-primary/30 dark:hover:border-primary/50 cursor-pointer transition-all">
+<div class="flex justify-between items-start mb-3">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1;">folder</span>
+<button class="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-opacity">
+<span class="material-symbols-outlined text-gray-400 text-[20px]">more_vert</span>
+</button>
+</div>
+<h5 class="font-medium text-[#111318] dark:text-white truncate" title="Relatórios Fiscais">Relatórios Fiscais</h5>
+<p class="text-xs text-[#616f89] dark:text-gray-500 mt-1">12 itens • 24 Out 2023</p>
+</div>
+<!-- Folder Item -->
+<div class="group relative flex flex-col p-4 bg-white dark:bg-[#1e232e] border border-gray-100 dark:border-gray-800 rounded-xl hover:shadow-md hover:border-primary/30 dark:hover:border-primary/50 cursor-pointer transition-all">
+<div class="flex justify-between items-start mb-3">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1;">folder</span>
+<button class="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-opacity">
+<span class="material-symbols-outlined text-gray-400 text-[20px]">more_vert</span>
+</button>
+</div>
+<h5 class="font-medium text-[#111318] dark:text-white truncate" title="Contratos 2023">Contratos 2023</h5>
+<p class="text-xs text-[#616f89] dark:text-gray-500 mt-1">8 itens • 15 Out 2023</p>
+</div>
+<!-- Folder Item -->
+<div class="group relative flex flex-col p-4 bg-white dark:bg-[#1e232e] border border-gray-100 dark:border-gray-800 rounded-xl hover:shadow-md hover:border-primary/30 dark:hover:border-primary/50 cursor-pointer transition-all">
+<div class="flex justify-between items-start mb-3">
+<span class="material-symbols-outlined text-4xl text-primary" style="font-variation-settings: 'FILL' 1;">folder</span>
+<button class="opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-opacity">
+<span class="material-symbols-outlined text-gray-400 text-[20px]">more_vert</span>
+</button>
+</div>
+<h5 class="font-medium text-[#111318] dark:text-white truncate" title="Planejamento Orçamentário">Orçamentos</h5>
+<p class="text-xs text-[#616f89] dark:text-gray-500 mt-1">3 itens • 10 Out 2023</p>
+</div>
+</div>
+</div>
+<!-- Files Section -->
+<div class="mb-4">
+<h4 class="text-sm font-semibold text-[#616f89] dark:text-gray-400 mb-4 uppercase tracking-wider">Arquivos</h4>
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+<!-- File Item: PDF (Selected State Demo) -->
+<div class="group relative flex flex-col p-4 bg-primary/5 border border-primary rounded-xl cursor-pointer shadow-sm transition-all">
+<div class="absolute top-3 right-3 flex gap-1">
+<div class="size-5 bg-primary rounded border border-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[16px]">check</span>
+</div>
+</div>
+<div class="flex justify-start items-start mb-3 mt-1">
+<div class="size-10 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-500">
+<span class="material-symbols-outlined text-2xl">picture_as_pdf</span>
+</div>
+</div>
+<h5 class="font-medium text-[#111318] dark:text-white truncate" title="Balanço_Anual_2023.pdf">Balanço_Anual_2023.pdf</h5>
+<p class="text-xs text-[#616f89] dark:text-gray-500 mt-1">2.4 MB • Ontem</p>
+</div>
+<!-- File Item: Spreadsheet -->
+<div class="group relative flex flex-col p-4 bg-white dark:bg-[#1e232e] border border-gray-100 dark:border-gray-800 rounded-xl hover:shadow-md hover:border-primary/30 dark:hover:border-primary/50 cursor-pointer transition-all">
+<div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
+<span class="material-symbols-outlined text-gray-400 text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="flex justify-start items-start mb-3 mt-1">
+<div class="size-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600">
+<span class="material-symbols-outlined text-2xl">table_view</span>
+</div>
+</div>
+<h5 class="font-medium text-[#111318] dark:text-white truncate" title="Fluxo_Caixa_Set.xlsx">Fluxo_Caixa_Set.xlsx</h5>
+<p class="text-xs text-[#616f89] dark:text-gray-500 mt-1">850 KB • 20 Out</p>
+</div>
+<!-- File Item: Image -->
+<div class="group relative flex flex-col p-4 bg-white dark:bg-[#1e232e] border border-gray-100 dark:border-gray-800 rounded-xl hover:shadow-md hover:border-primary/30 dark:hover:border-primary/50 cursor-pointer transition-all">
+<div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
+<span class="material-symbols-outlined text-gray-400 text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="w-full aspect-video rounded-lg mb-3 bg-gray-100 overflow-hidden relative">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Preview of a receipt scanned document" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB6EsVo3E5_ALM-NvSK_1aUYRKu9la8j74IMFAl4TbSy2mAfhFDhzx4YEPcMzilxH0Swchd_SMrja1GuARYmSw87faIsPkNPL3883YYQ9Q-KOs0ZOA88no4bwzSp-SMeyi_sW3Okewdz0ZJ3itDUZvq9P0rTjN09EgHQIU6Mdv3UmN1kP5ZVGoKRLaSoOXAbYHjuNcF4mccBTNtt8HFry1I7GnRvH2BQboykRLZhdMis8YlGuvvc86zZ9mYF3Giw7ojWOI-7B0KUBEw');"></div>
+</div>
+<h5 class="font-medium text-[#111318] dark:text-white truncate" title="Comprovante_Pagamento.jpg">Comprovante_Pgto.jpg</h5>
+<p class="text-xs text-[#616f89] dark:text-gray-500 mt-1">1.2 MB • 18 Out</p>
+</div>
+<!-- File Item: Word Doc -->
+<div class="group relative flex flex-col p-4 bg-white dark:bg-[#1e232e] border border-gray-100 dark:border-gray-800 rounded-xl hover:shadow-md hover:border-primary/30 dark:hover:border-primary/50 cursor-pointer transition-all">
+<div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
+<span class="material-symbols-outlined text-gray-400 text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="flex justify-start items-start mb-3 mt-1">
+<div class="size-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600">
+<span class="material-symbols-outlined text-2xl">description</span>
+</div>
+</div>
+<h5 class="font-medium text-[#111318] dark:text-white truncate" title="Proposta_Comercial.docx">Proposta_Comercial.docx</h5>
+<p class="text-xs text-[#616f89] dark:text-gray-500 mt-1">450 KB • 12 Out</p>
+</div>
+<!-- File Item: Zip -->
+<div class="group relative flex flex-col p-4 bg-white dark:bg-[#1e232e] border border-gray-100 dark:border-gray-800 rounded-xl hover:shadow-md hover:border-primary/30 dark:hover:border-primary/50 cursor-pointer transition-all">
+<div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full">
+<span class="material-symbols-outlined text-gray-400 text-[20px]">more_vert</span>
+</button>
+</div>
+<div class="flex justify-start items-start mb-3 mt-1">
+<div class="size-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600">
+<span class="material-symbols-outlined text-2xl">folder_zip</span>
+</div>
+</div>
+<h5 class="font-medium text-[#111318] dark:text-white truncate" title="Backup_Setembro.zip">Backup_Setembro.zip</h5>
+<p class="text-xs text-[#616f89] dark:text-gray-500 mt-1">156 MB • 01 Out</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>
