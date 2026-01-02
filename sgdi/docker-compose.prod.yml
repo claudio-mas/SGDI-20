@@ -1,0 +1,125 @@
+# SGDI - Docker Compose para Produção na VPS
+# Conecta aos serviços existentes: OpenResty (proxy) e PostgreSQL (banco)
+
+version: '3.8'
+
+services:
+  # ============================================
+  # FRONTEND - Build estático servido pelo OpenResty
+  # ============================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: sgdi-frontend
+    restart: unless-stopped
+    volumes:
+      - frontend_dist:/app/dist
+    networks:
+      - sgdi-network
+
+  # ============================================
+  # BACKEND - Node.js + Fastify
+  # ============================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sgdi-backend
+    restart: unless-stopped
+    expose:
+      - "8000"
+    environment:
+      - NODE_ENV=production
+      - PORT=8000
+      # Conecta ao PostgreSQL existente na VPS
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=redis://redis:6379
+      - MINIO_ENDPOINT=minio
+      - MINIO_PORT=9000
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_BUCKET=sgdi-documentos
+      - MINIO_USE_SSL=false
+      - KEYCLOAK_URL=${KEYCLOAK_URL}
+      - KEYCLOAK_REALM=sgdi
+      - KEYCLOAK_CLIENT_ID=sgdi-backend
+      - KEYCLOAK_CLIENT_SECRET=${KEYCLOAK_CLIENT_SECRET}
+      - JWT_SECRET=${JWT_SECRET}
+      - CORS_ORIGIN=${CORS_ORIGIN}
+    depends_on:
+      - redis
+      - minio
+      - keycloak
+    networks:
+      - sgdi-network
+      - vps-network  # Rede compartilhada com OpenResty e PostgreSQL
+
+  # ============================================
+  # STORAGE - MinIO (S3-compatible)
+  # ============================================
+  minio:
+    image: minio/minio:latest
+    container_name: sgdi-minio
+    restart: unless-stopped
+    expose:
+      - "9000"
+    ports:
+      - "127.0.0.1:9001:9001"  # Console apenas local
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ACCESS_KEY}
+      - MINIO_ROOT_PASSWORD=${MINIO_SECRET_KEY}
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - sgdi-network
+
+  # ============================================
+  # AUTENTICAÇÃO - Keycloak
+  # ============================================
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    container_name: sgdi-keycloak
+    restart: unless-stopped
+    expose:
+      - "8080"
+    environment:
+      - KEYCLOAK_ADMIN=${KEYCLOAK_ADMIN}
+      - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD}
+      - KC_DB=postgres
+      - KC_DB_URL=${KC_DB_URL}
+      - KC_DB_USERNAME=${KC_DB_USERNAME}
+      - KC_DB_PASSWORD=${KC_DB_PASSWORD}
+      - KC_HOSTNAME=${KC_HOSTNAME}
+      - KC_PROXY=edge
+    command: start
+    networks:
+      - sgdi-network
+      - vps-network
+
+  # ============================================
+  # CACHE E FILAS - Redis
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    container_name: sgdi-redis
+    restart: unless-stopped
+    expose:
+      - "6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    networks:
+      - sgdi-network
+
+volumes:
+  frontend_dist:
+  minio_data:
+  redis_data:
+
+networks:
+  sgdi-network:
+    driver: bridge
+  vps-network:
+    external: true  # Rede existente na VPS onde estão OpenResty e PostgreSQL

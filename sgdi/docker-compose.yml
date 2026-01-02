@@ -1,0 +1,145 @@
+# SGDI - Docker Compose para Desenvolvimento Local
+# Em produção, os serviços se conectam aos containers existentes na VPS
+
+version: '3.8'
+
+services:
+  # ============================================
+  # FRONTEND - React + Vite
+  # ============================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: sgdi-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_WS_URL=ws://localhost:8000
+      - VITE_KEYCLOAK_URL=http://localhost:8080
+      - VITE_KEYCLOAK_REALM=sgdi
+      - VITE_KEYCLOAK_CLIENT_ID=sgdi-frontend
+    depends_on:
+      - backend
+    networks:
+      - sgdi-network
+
+  # ============================================
+  # BACKEND - Node.js + Fastify
+  # ============================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    container_name: sgdi-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - PORT=8000
+      - DATABASE_URL=postgresql://sgdi:sgdi_dev@postgres:5432/sgdi_db
+      - REDIS_URL=redis://redis:6379
+      - MINIO_ENDPOINT=minio
+      - MINIO_PORT=9000
+      - MINIO_ACCESS_KEY=minioadmin
+      - MINIO_SECRET_KEY=minioadmin
+      - MINIO_BUCKET=sgdi-documentos
+      - KEYCLOAK_URL=http://keycloak:8080
+      - KEYCLOAK_REALM=sgdi
+      - KEYCLOAK_CLIENT_ID=sgdi-backend
+      - KEYCLOAK_CLIENT_SECRET=your-client-secret
+      - JWT_SECRET=dev-jwt-secret-change-in-production
+    depends_on:
+      - postgres
+      - redis
+      - minio
+      - keycloak
+    networks:
+      - sgdi-network
+
+  # ============================================
+  # BANCO DE DADOS - PostgreSQL
+  # (Em produção, usar o PostgreSQL existente na VPS)
+  # ============================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: sgdi-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=sgdi
+      - POSTGRES_PASSWORD=sgdi_dev
+      - POSTGRES_DB=sgdi_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init:/docker-entrypoint-initdb.d
+    networks:
+      - sgdi-network
+
+  # ============================================
+  # STORAGE - MinIO (S3-compatible)
+  # ============================================
+  minio:
+    image: minio/minio:latest
+    container_name: sgdi-minio
+    ports:
+      - "9000:9000"   # API
+      - "9001:9001"   # Console
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - sgdi-network
+
+  # ============================================
+  # AUTENTICAÇÃO - Keycloak
+  # ============================================
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0
+    container_name: sgdi-keycloak
+    ports:
+      - "8080:8080"
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=postgres
+      - KC_DB_URL=jdbc:postgresql://postgres:5432/sgdi_db
+      - KC_DB_USERNAME=sgdi
+      - KC_DB_PASSWORD=sgdi_dev
+    command: start-dev
+    depends_on:
+      - postgres
+    networks:
+      - sgdi-network
+
+  # ============================================
+  # CACHE E FILAS - Redis
+  # ============================================
+  redis:
+    image: redis:7-alpine
+    container_name: sgdi-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - sgdi-network
+
+volumes:
+  postgres_data:
+  minio_data:
+  redis_data:
+
+networks:
+  sgdi-network:
+    driver: bridge

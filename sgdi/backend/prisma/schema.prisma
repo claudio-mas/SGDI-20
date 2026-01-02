@@ -1,0 +1,452 @@
+// SGDI - Schema do Banco de Dados
+// Baseado na especificação ESPECIFICACAO_SOFTWARE_SGDI.md
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// PERFIS E PERMISSÕES
+// ============================================
+
+model Perfil {
+  id          Int       @id @default(autoincrement())
+  nome        String    @unique // Administrador, Gestor, Usuário Padrão, Auditor, Visitante
+  descricao   String?
+  nivelTecnico String   @map("nivel_tecnico") // Alto, Médio, Básico
+  ativo       Boolean   @default(true)
+  dataCriacao DateTime  @default(now()) @map("data_criacao")
+  
+  usuarios    Usuario[]
+  permissoes  PerfilPermissao[]
+  
+  @@map("perfis")
+}
+
+model Permissao {
+  id        Int       @id @default(autoincrement())
+  codigo    String    @unique // USUARIO_CRIAR, DOCUMENTO_APROVAR, etc.
+  nome      String
+  descricao String?
+  modulo    String    // usuarios, documentos, sistema, relatorios, auditoria
+  ativo     Boolean   @default(true)
+  
+  perfis    PerfilPermissao[]
+  
+  @@map("permissoes")
+}
+
+model PerfilPermissao {
+  perfilId      Int       @map("perfil_id")
+  permissaoId   Int       @map("permissao_id")
+  dataAtribuicao DateTime @default(now()) @map("data_atribuicao")
+  
+  perfil    Perfil    @relation(fields: [perfilId], references: [id])
+  permissao Permissao @relation(fields: [permissaoId], references: [id])
+  
+  @@id([perfilId, permissaoId])
+  @@map("perfil_permissoes")
+}
+
+// ============================================
+// USUÁRIOS E SETORES
+// ============================================
+
+model Usuario {
+  id            Int       @id @default(autoincrement())
+  keycloakId    String    @unique @map("keycloak_id")
+  nome          String
+  email         String    @unique
+  telefone      String?
+  cargo         String?
+  fotoPerfil    String?   @map("foto_perfil")
+  perfilId      Int       @map("perfil_id")
+  setorId       Int?      @map("setor_id")
+  ativo         Boolean   @default(true)
+  ultimoAcesso  DateTime? @map("ultimo_acesso")
+  dataCriacao   DateTime  @default(now()) @map("data_criacao")
+  
+  perfil        Perfil    @relation(fields: [perfilId], references: [id])
+  setor         Setor?    @relation("UsuarioSetor", fields: [setorId], references: [id])
+  setorGerenciado Setor?  @relation("GestorSetor")
+  
+  documentos    Documento[]
+  pastas        Pasta[]
+  versoes       Versao[]
+  comentarios   Comentario[]
+  atividades    Atividade[]
+  logsAuditoria LogAuditoria[]
+  aprovacoesSolicitadas Aprovacao[] @relation("SolicitanteAprovacao")
+  aprovacoesRealizadas  Aprovacao[] @relation("AprovadorAprovacao")
+  compartilhamentosRecebidos Compartilhamento[]
+  sessoes       SessaoUsuario[]
+  workflowsCriados Workflow[]
+  workflowsIniciados WorkflowInstancia[]
+  tarefasResponsavel TarefaWorkflow[] @relation("ResponsavelTarefa")
+  tarefasDelegadas   TarefaWorkflow[] @relation("DelegadoTarefa")
+  
+  @@map("usuarios")
+}
+
+model Setor {
+  id        Int       @id @default(autoincrement())
+  nome      String    @unique
+  descricao String?
+  gestorId  Int?      @unique @map("gestor_id")
+  ativo     Boolean   @default(true)
+  
+  gestor    Usuario?  @relation("GestorSetor", fields: [gestorId], references: [id])
+  usuarios  Usuario[] @relation("UsuarioSetor")
+  workflows Workflow[]
+  
+  @@map("setores")
+}
+
+// ============================================
+// DOCUMENTOS E PASTAS
+// ============================================
+
+model Documento {
+  id              Int       @id @default(autoincrement())
+  nome            String
+  tipo            String    // pdf, docx, xlsx, etc.
+  tamanho         BigInt
+  caminhoStorage  String    @map("caminho_storage") // Path no MinIO
+  pastaId         Int?      @map("pasta_id")
+  proprietarioId  Int       @map("proprietario_id")
+  status          String    @default("rascunho") // rascunho, em_revisao, aprovado, rejeitado
+  dataCriacao     DateTime  @default(now()) @map("data_criacao")
+  dataModificacao DateTime  @updatedAt @map("data_modificacao")
+  excluidoEm      DateTime? @map("excluido_em")
+  
+  pasta           Pasta?    @relation(fields: [pastaId], references: [id])
+  proprietario    Usuario   @relation(fields: [proprietarioId], references: [id])
+  
+  versoes         Versao[]
+  tags            DocumentoTag[]
+  compartilhamentos Compartilhamento[]
+  comentarios     Comentario[]
+  aprovacoes      Aprovacao[]
+  documentoPublico DocumentoPublico?
+  workflowInstancias WorkflowInstancia[]
+  
+  @@index([proprietarioId])
+  @@index([pastaId])
+  @@index([status])
+  @@map("documentos")
+}
+
+model Pasta {
+  id            Int       @id @default(autoincrement())
+  nome          String
+  pastaPaiId    Int?      @map("pasta_pai_id")
+  proprietarioId Int      @map("proprietario_id")
+  dataCriacao   DateTime  @default(now()) @map("data_criacao")
+  
+  pastaPai      Pasta?    @relation("SubPastas", fields: [pastaPaiId], references: [id])
+  subPastas     Pasta[]   @relation("SubPastas")
+  proprietario  Usuario   @relation(fields: [proprietarioId], references: [id])
+  documentos    Documento[]
+  
+  @@index([proprietarioId])
+  @@map("pastas")
+}
+
+model Versao {
+  id            Int       @id @default(autoincrement())
+  documentoId   Int       @map("documento_id")
+  numeroVersao  Int       @map("numero_versao")
+  autorId       Int       @map("autor_id")
+  comentario    String?
+  caminhoStorage String   @map("caminho_storage")
+  dataCriacao   DateTime  @default(now()) @map("data_criacao")
+  
+  documento     Documento @relation(fields: [documentoId], references: [id])
+  autor         Usuario   @relation(fields: [autorId], references: [id])
+  comentarios   Comentario[]
+  
+  @@unique([documentoId, numeroVersao])
+  @@map("versoes")
+}
+
+// ============================================
+// TAGS
+// ============================================
+
+model Tag {
+  id          Int       @id @default(autoincrement())
+  nome        String
+  cor         String    // Hex color
+  descricao   String?
+  dataCriacao DateTime  @default(now()) @map("data_criacao")
+  
+  documentos  DocumentoTag[]
+  
+  @@map("tags")
+}
+
+model DocumentoTag {
+  documentoId Int @map("documento_id")
+  tagId       Int @map("tag_id")
+  
+  documento   Documento @relation(fields: [documentoId], references: [id])
+  tag         Tag       @relation(fields: [tagId], references: [id])
+  
+  @@id([documentoId, tagId])
+  @@map("documento_tags")
+}
+
+// ============================================
+// COMPARTILHAMENTO
+// ============================================
+
+model Compartilhamento {
+  id                  Int       @id @default(autoincrement())
+  documentoId         Int       @map("documento_id")
+  usuarioId           Int       @map("usuario_id")
+  permissao           String    // leitura, edicao, proprietario
+  dataCompartilhamento DateTime @default(now()) @map("data_compartilhamento")
+  
+  documento   Documento @relation(fields: [documentoId], references: [id])
+  usuario     Usuario   @relation(fields: [usuarioId], references: [id])
+  
+  @@unique([documentoId, usuarioId])
+  @@map("compartilhamentos")
+}
+
+model DocumentoPublico {
+  id              Int       @id @default(autoincrement())
+  documentoId     Int       @unique @map("documento_id")
+  tokenAcesso     String    @unique @map("token_acesso")
+  permiteDownload Boolean   @default(false) @map("permite_download")
+  senha           String?
+  dataExpiracao   DateTime? @map("data_expiracao")
+  dataCriacao     DateTime  @default(now()) @map("data_criacao")
+  
+  documento       Documento @relation(fields: [documentoId], references: [id])
+  
+  @@map("documentos_publicos")
+}
+
+// ============================================
+// COMENTÁRIOS E ANOTAÇÕES
+// ============================================
+
+model Comentario {
+  id          Int       @id @default(autoincrement())
+  documentoId Int       @map("documento_id")
+  versaoId    Int?      @map("versao_id")
+  autorId     Int       @map("autor_id")
+  conteudo    String
+  pagina      Int?
+  posicaoX    Float?    @map("posicao_x")
+  posicaoY    Float?    @map("posicao_y")
+  dataCriacao DateTime  @default(now()) @map("data_criacao")
+  
+  documento   Documento @relation(fields: [documentoId], references: [id])
+  versao      Versao?   @relation(fields: [versaoId], references: [id])
+  autor       Usuario   @relation(fields: [autorId], references: [id])
+  
+  @@map("comentarios")
+}
+
+// ============================================
+// ATIVIDADES E AUDITORIA
+// ============================================
+
+model Atividade {
+  id          Int       @id @default(autoincrement())
+  usuarioId   Int       @map("usuario_id")
+  tipoAcao    String    @map("tipo_acao")
+  entidade    String    // documento, pasta, usuario, etc.
+  entidadeId  Int       @map("entidade_id")
+  descricao   String?
+  data        DateTime  @default(now())
+  
+  usuario     Usuario   @relation(fields: [usuarioId], references: [id])
+  
+  @@index([usuarioId])
+  @@index([entidade, entidadeId])
+  @@map("atividades")
+}
+
+model LogAuditoria {
+  id              Int       @id @default(autoincrement())
+  usuarioId       Int       @map("usuario_id")
+  acao            String    // LOGIN, LOGOUT, CRIAR, EDITAR, EXCLUIR, etc.
+  entidade        String    // documento, pasta, usuario, configuracao
+  entidadeId      Int?      @map("entidade_id")
+  dadosAnteriores Json?     @map("dados_anteriores")
+  dadosNovos      Json?     @map("dados_novos")
+  ipAddress       String?   @map("ip_address")
+  userAgent       String?   @map("user_agent")
+  dataHora        DateTime  @default(now()) @map("data_hora")
+  
+  usuario         Usuario   @relation(fields: [usuarioId], references: [id])
+  
+  @@index([usuarioId])
+  @@index([acao])
+  @@index([dataHora])
+  @@map("logs_auditoria")
+}
+
+// ============================================
+// APROVAÇÕES
+// ============================================
+
+model Aprovacao {
+  id              Int       @id @default(autoincrement())
+  documentoId     Int       @map("documento_id")
+  solicitanteId   Int       @map("solicitante_id")
+  aprovadorId     Int?      @map("aprovador_id")
+  status          String    @default("pendente") // pendente, aprovado, rejeitado
+  comentario      String?
+  dataSolicitacao DateTime  @default(now()) @map("data_solicitacao")
+  dataDecisao     DateTime? @map("data_decisao")
+  
+  documento       Documento @relation(fields: [documentoId], references: [id])
+  solicitante     Usuario   @relation("SolicitanteAprovacao", fields: [solicitanteId], references: [id])
+  aprovador       Usuario?  @relation("AprovadorAprovacao", fields: [aprovadorId], references: [id])
+  
+  @@map("aprovacoes")
+}
+
+// ============================================
+// SESSÕES
+// ============================================
+
+model SessaoUsuario {
+  id              Int       @id @default(autoincrement())
+  usuarioId       Int       @map("usuario_id")
+  token           String    @unique
+  ipAddress       String?   @map("ip_address")
+  userAgent       String?   @map("user_agent")
+  dataInicio      DateTime  @default(now()) @map("data_inicio")
+  dataUltimoAcesso DateTime @default(now()) @map("data_ultimo_acesso")
+  dataExpiracao   DateTime  @map("data_expiracao")
+  
+  usuario         Usuario   @relation(fields: [usuarioId], references: [id])
+  
+  @@index([usuarioId])
+  @@map("sessoes_usuario")
+}
+
+// ============================================
+// WORKFLOWS
+// ============================================
+
+model Workflow {
+  id              Int       @id @default(autoincrement())
+  nome            String
+  descricao       String?
+  versao          Int       @default(1)
+  status          String    @default("rascunho") // rascunho, ativo, inativo, arquivado
+  criadoPorId     Int       @map("criado_por_id")
+  setorId         Int?      @map("setor_id")
+  configuracaoJson Json?    @map("configuracao_json")
+  dataCriacao     DateTime  @default(now()) @map("data_criacao")
+  dataModificacao DateTime  @updatedAt @map("data_modificacao")
+  
+  criadoPor       Usuario   @relation(fields: [criadoPorId], references: [id])
+  setor           Setor?    @relation(fields: [setorId], references: [id])
+  etapas          WorkflowEtapa[]
+  instancias      WorkflowInstancia[]
+  
+  @@map("workflows")
+}
+
+model WorkflowEtapa {
+  id                    Int       @id @default(autoincrement())
+  workflowId            Int       @map("workflow_id")
+  tipo                  String    // inicio, revisao, aprovacao, condicao, publicacao, email, fim
+  nome                  String
+  ordem                 Int
+  posicaoX              Float?    @map("posicao_x")
+  posicaoY              Float?    @map("posicao_y")
+  configuracaoJson      Json?     @map("configuracao_json")
+  etapaAnteriorId       Int?      @map("etapa_anterior_id")
+  etapaProximaAprovadoId Int?     @map("etapa_proxima_aprovado_id")
+  etapaProximaRejeitadoId Int?    @map("etapa_proxima_rejeitado_id")
+  
+  workflow              Workflow  @relation(fields: [workflowId], references: [id])
+  instanciasAtuais      WorkflowInstancia[]
+  tarefas               TarefaWorkflow[]
+  
+  @@map("workflow_etapas")
+}
+
+model WorkflowInstancia {
+  id              Int       @id @default(autoincrement())
+  workflowId      Int       @map("workflow_id")
+  documentoId     Int       @map("documento_id")
+  status          String    @default("em_andamento") // em_andamento, concluido, cancelado, pausado
+  etapaAtualId    Int?      @map("etapa_atual_id")
+  iniciadoPorId   Int       @map("iniciado_por_id")
+  dadosContextoJson Json?   @map("dados_contexto_json")
+  dataInicio      DateTime  @default(now()) @map("data_inicio")
+  dataConclusao   DateTime? @map("data_conclusao")
+  
+  workflow        Workflow  @relation(fields: [workflowId], references: [id])
+  documento       Documento @relation(fields: [documentoId], references: [id])
+  etapaAtual      WorkflowEtapa? @relation(fields: [etapaAtualId], references: [id])
+  iniciadoPor     Usuario   @relation(fields: [iniciadoPorId], references: [id])
+  tarefas         TarefaWorkflow[]
+  
+  @@map("workflow_instancias")
+}
+
+model TarefaWorkflow {
+  id                  Int       @id @default(autoincrement())
+  workflowInstanciaId Int       @map("workflow_instancia_id")
+  workflowEtapaId     Int       @map("workflow_etapa_id")
+  responsavelId       Int       @map("responsavel_id")
+  status              String    @default("pendente") // pendente, em_analise, aprovado, rejeitado, delegado
+  prioridade          String    @default("normal") // normal, urgente
+  prazo               DateTime?
+  comentario          String?
+  dataCriacao         DateTime  @default(now()) @map("data_criacao")
+  dataConclusao       DateTime? @map("data_conclusao")
+  delegadoParaId      Int?      @map("delegado_para_id")
+  
+  workflowInstancia   WorkflowInstancia @relation(fields: [workflowInstanciaId], references: [id])
+  workflowEtapa       WorkflowEtapa     @relation(fields: [workflowEtapaId], references: [id])
+  responsavel         Usuario           @relation("ResponsavelTarefa", fields: [responsavelId], references: [id])
+  delegadoPara        Usuario?          @relation("DelegadoTarefa", fields: [delegadoParaId], references: [id])
+  
+  @@map("tarefas_workflow")
+}
+
+// ============================================
+// CONFIGURAÇÕES
+// ============================================
+
+model ConfiguracaoCompartilhamento {
+  id                    Int       @id @default(autoincrement())
+  usuarioId             Int       @unique @map("usuario_id")
+  expiracaoPadraoLinks  Int       @default(30) @map("expiracao_padrao_links") // dias
+  permissaoPadrao       String    @default("leitura") @map("permissao_padrao")
+  restringirDownload    Boolean   @default(false) @map("restringir_download")
+  permitirLinksPublicos Boolean   @default(true) @map("permitir_links_publicos")
+  dataModificacao       DateTime  @updatedAt @map("data_modificacao")
+  
+  @@map("configuracoes_compartilhamento")
+}
+
+model ConfiguracaoMarcaAgua {
+  id              Int       @id @default(autoincrement())
+  usuarioId       Int       @unique @map("usuario_id")
+  ativo           Boolean   @default(false)
+  conteudo        String    @default("{EMAIL}")
+  posicao         String    @default("centro_diagonal")
+  cor             String    @default("#000000")
+  tamanho         Int       @default(24) // px
+  opacidade       Int       @default(30) // 0-100
+  dataModificacao DateTime  @updatedAt @map("data_modificacao")
+  
+  @@map("configuracoes_marca_agua")
+}
