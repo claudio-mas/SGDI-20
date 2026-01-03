@@ -1,5 +1,4 @@
 import React from 'react';
-import { Document, Folder } from '../../types';
 import FileIcon, { FileType } from '../common/FileIcon';
 
 export interface DocumentGridItem {

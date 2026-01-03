@@ -20,3 +20,6 @@ export type {
   SidebarTab,
   SaveStatus,
 } from './DocumentViewer';
+
+export { VersionHistory } from './VersionHistory';
+export type { VersionHistoryProps } from './VersionHistory';

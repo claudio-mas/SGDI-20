@@ -39,3 +39,14 @@ export interface Tag {
   description?: string;
   usageCount: number;
 }
+
+export interface DocumentVersion {
+  id: string;
+  documentId: string;
+  version: string;
+  modifiedAt: Date;
+  modifiedBy: User;
+  comment?: string;
+  size: number;
+  isCurrent: boolean;
+}
