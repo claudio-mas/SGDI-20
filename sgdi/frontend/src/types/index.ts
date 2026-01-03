@@ -138,3 +138,39 @@ export interface WorkflowHistoryItem {
   timestamp: Date;
   status: 'completed' | 'current' | 'pending';
 }
+
+
+// Audit Types
+export type AuditAction = 'create' | 'edit' | 'delete' | 'share' | 'view' | 'restore';
+
+export interface AuditLog {
+  id: string;
+  timestamp: Date;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  userAvatar?: string;
+  action: AuditAction;
+  documentId?: string;
+  documentName: string;
+  documentDeleted?: boolean;
+  ipAddress: string;
+  details?: AuditLogDetails;
+}
+
+export interface AuditLogDetails {
+  browser?: string;
+  os?: string;
+  location?: string;
+  previousValue?: string;
+  newValue?: string;
+  sharedWith?: string[];
+  permissionLevel?: string;
+}
+
+export interface AuditFiltersState {
+  period: string;
+  userId: string;
+  action: AuditAction | '';
+  documentName: string;
+}
