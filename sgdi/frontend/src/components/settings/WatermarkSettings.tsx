@@ -116,7 +116,10 @@ export default function WatermarkSettings({
       
       <div className="space-y-5">
         {/* Preview */}
-        <div className="w-full h-40 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 relative overflow-hidden">
+        <div 
+          data-testid="watermark-preview-container"
+          className="w-full h-40 bg-gray-100 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 relative overflow-hidden"
+        >
           {/* Document simulation */}
           <div className="absolute inset-0 p-5 space-y-3 opacity-20 pointer-events-none select-none">
             <div className="h-2 bg-gray-400 dark:bg-gray-500 rounded w-3/4"></div>
@@ -129,7 +132,14 @@ export default function WatermarkSettings({
           
           {/* Watermark preview */}
           {config.enabled && (
-            <span style={getPositionStyles()}>
+            <span 
+              data-testid="watermark-preview-text"
+              data-position={config.position}
+              data-color={config.color}
+              data-size={config.size}
+              data-opacity={config.opacity}
+              style={getPositionStyles()}
+            >
               {processedText}
             </span>
           )}
@@ -143,8 +153,10 @@ export default function WatermarkSettings({
         <div className="space-y-4">
           {/* Text Content */}
           <div className="space-y-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Conteúdo</label>
+            <label htmlFor="watermark-text-input" className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Conteúdo</label>
             <input 
+              id="watermark-text-input"
+              data-testid="watermark-text-input"
               type="text"
               value={config.text}
               onChange={(e) => handleChange('text', e.target.value)}
@@ -179,8 +191,10 @@ export default function WatermarkSettings({
           {/* Position and Color */}
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Posição</label>
+              <label htmlFor="watermark-position-select" className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Posição</label>
               <select 
+                id="watermark-position-select"
+                data-testid="watermark-position-select"
                 value={config.position}
                 onChange={(e) => handleChange('position', e.target.value as WatermarkConfig['position'])}
                 disabled={!config.enabled}
@@ -217,10 +231,12 @@ export default function WatermarkSettings({
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Tamanho</label>
+                <label htmlFor="watermark-size-slider" className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Tamanho</label>
                 <span className="text-xs font-mono text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">{config.size}px</span>
               </div>
               <input 
+                id="watermark-size-slider"
+                data-testid="watermark-size-slider"
                 type="range"
                 min="10"
                 max="100"
@@ -233,10 +249,12 @@ export default function WatermarkSettings({
             
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <label className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Opacidade</label>
+                <label htmlFor="watermark-opacity-slider" className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Opacidade</label>
                 <span className="text-xs font-mono text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded">{config.opacity}%</span>
               </div>
               <input 
+                id="watermark-opacity-slider"
+                data-testid="watermark-opacity-slider"
                 type="range"
                 min="0"
                 max="100"

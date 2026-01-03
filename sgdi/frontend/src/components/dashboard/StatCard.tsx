@@ -39,19 +39,25 @@ export function StatCard({ icon, label, value, trend, color }: StatCardProps) {
   const styles = colorStyles[color];
 
   return (
-    <div className="p-5 bg-white dark:bg-[#1a2233] rounded-xl border border-[#e5e7eb] dark:border-gray-800 shadow-sm flex flex-col justify-between h-32">
+    <div 
+      className="p-5 bg-white dark:bg-[#1a2233] rounded-xl border border-[#e5e7eb] dark:border-gray-800 shadow-sm flex flex-col justify-between h-32"
+      data-testid="stat-card"
+      data-color={color}
+    >
       <div className="flex justify-between items-start">
         <div>
-          <p className="text-[#616f89] dark:text-gray-400 text-sm font-medium">{label}</p>
-          <p className="text-2xl font-bold mt-1 dark:text-white">{value}</p>
+          <p data-testid="stat-card-label" className="text-[#616f89] dark:text-gray-400 text-sm font-medium">{label}</p>
+          <p data-testid="stat-card-value" className="text-2xl font-bold mt-1 dark:text-white">{value}</p>
         </div>
-        <div className={`p-2 ${styles.bg} ${styles.darkBg} rounded-lg ${styles.text}`}>
-          <span className="material-symbols-outlined">{icon}</span>
+        <div data-testid="stat-card-icon-container" className={`p-2 ${styles.bg} ${styles.darkBg} rounded-lg ${styles.text}`}>
+          <span data-testid="stat-card-icon" className="material-symbols-outlined">{icon}</span>
         </div>
       </div>
       {trend && (
-        <div className="flex items-center gap-1 text-sm">
+        <div data-testid="stat-card-trend" className="flex items-center gap-1 text-sm">
           <span
+            data-testid="stat-card-trend-value"
+            data-direction={trend.direction}
             className={`font-medium flex items-center ${
               trend.direction === 'up' ? 'text-green-600' : 'text-red-600'
             }`}
@@ -61,7 +67,7 @@ export function StatCard({ icon, label, value, trend, color }: StatCardProps) {
             </span>
             {trend.value}%
           </span>
-          <span className="text-[#616f89] dark:text-gray-500">{trend.label}</span>
+          <span data-testid="stat-card-trend-label" className="text-[#616f89] dark:text-gray-500">{trend.label}</span>
         </div>
       )}
     </div>
